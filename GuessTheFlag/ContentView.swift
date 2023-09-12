@@ -7,6 +7,16 @@
 
 import SwiftUI
 
+struct flagImage: View {
+    var input: String
+    
+    var body: some View {
+        Image(input)
+            .renderingMode(.original)
+            .clipShape(Capsule())
+            .shadow(radius: 5)
+    }
+}
 struct titleModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
@@ -58,10 +68,7 @@ struct ContentView: View {
                             flagTapped(number)
                             tapCount += 1
                         }label: {
-                            Image(countries[number])
-                        
-//                                .clipShape(Capsule())
-//                                .shadow(radius: 5)
+                            flagImage(input: countries[number])
                         }
                     }
                 }
@@ -82,7 +89,6 @@ struct ContentView: View {
                 } message: {
                     if tapCount == 9 {
                         Text("End game, your score: \(score)")
-//                        isOver = true
                     }
                 }
                 Spacer()
