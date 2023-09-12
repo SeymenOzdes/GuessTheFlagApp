@@ -7,17 +7,28 @@
 
 import SwiftUI
 
+struct titleModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.largeTitle.bold())
+        .foregroundColor(.blue)
+    }
+}
+extension View {
+    func titleStyle() -> some View {
+        modifier(titleModifier())
+    }
+}
+
 struct ContentView: View {
-    
-    @State private var showingScore = false
     @State private var scoreTitle = ""
     @State private var correctAnswer = Int.random(in: 0...2)
     @State private var score = 0
     @State private var wrongAnswer = 0
-    @State private var isOver: Bool = false
     @State private var tapCount: Int = 0
+    @State private var showingScore = false
+    @State private var isOver: Bool = false
     @State private var endTitle: String = "End Game"
-    
     @State var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"] .shuffled()
     
     
@@ -31,8 +42,7 @@ struct ContentView: View {
             
             VStack {
                 Text("Guess the Flag")
-                    .font(.largeTitle.bold())
-                    .foregroundColor(.white)
+                    .titleStyle()
                 
                 VStack(spacing: 15) {
                     VStack {
@@ -40,8 +50,7 @@ struct ContentView: View {
                             .foregroundStyle(.secondary)
                             .font(.subheadline.weight(.heavy))
                         Text(countries[correctAnswer])
-                            .font(.largeTitle.weight(.semibold))
-                            .foregroundStyle(.secondary)
+                            .titleStyle()
                     }
                     
                     ForEach(0..<3) { number in
@@ -50,9 +59,9 @@ struct ContentView: View {
                             tapCount += 1
                         }label: {
                             Image(countries[number])
-                                .renderingMode(.original)
-                                .clipShape(Capsule())
-                                .shadow(radius: 5)
+                        
+//                                .clipShape(Capsule())
+//                                .shadow(radius: 5)
                         }
                     }
                 }
@@ -73,6 +82,7 @@ struct ContentView: View {
                 } message: {
                     if tapCount == 9 {
                         Text("End game, your score: \(score)")
+//                        isOver = true
                     }
                 }
                 Spacer()
@@ -107,7 +117,7 @@ struct ContentView: View {
         correctAnswer = Int.random(in: 0...2)
     }
     func reset() {
-        // Oyunu sıfırlar
+        // Reset game
         score = 0
         scoreTitle = ""
         showingScore = false
