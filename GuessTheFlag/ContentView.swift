@@ -21,7 +21,7 @@ struct titleModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .font(.largeTitle.bold())
-        .foregroundColor(.blue)
+            .foregroundColor(.blue)
     }
 }
 extension View {
@@ -31,16 +31,18 @@ extension View {
 }
 
 struct ContentView: View {
+    @State var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"] .shuffled()
+    @State private var endTitle: String = "End Game"
     @State private var scoreTitle = ""
     @State private var correctAnswer = Int.random(in: 0...2)
-    @State private var score = 0
-    @State private var wrongAnswer = 0
     @State private var tapCount: Int = 0
-    @State private var showingScore = false
+    @State private var wrongAnswer = 0
+    @State private var score = 0
+    @State private var showingScore: Bool = false
     @State private var isOver: Bool = false
-    @State private var endTitle: String = "End Game"
-    @State var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"] .shuffled()
     
+    @State private var degrees = Double.zero
+
     
     var body: some View {
         ZStack {
@@ -67,9 +69,12 @@ struct ContentView: View {
                         Button {
                             flagTapped(number)
                             tapCount += 1
+                            degrees = (degrees == .zero) ? 360 : .zero
                         }label: {
                             flagImage(input: countries[number])
                         }
+                        .rotation3DEffect(.degrees(degrees), axis: (x: 0, y: 1, z: 0))
+                        .animation(.easeInOut, value: degrees)
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -84,8 +89,8 @@ struct ContentView: View {
                         .foregroundColor(.white)
                         .font(.largeTitle.weight(.semibold))
                 }
-                .alert(endTitle,isPresented: $isOver) {
-                    Button("Game over", action: reset)
+                .alert(endTitle, isPresented: $isOver) {
+                    Button("Game Over", action: reset)
                 } message: {
                     if tapCount == 9 {
                         Text("End game, your score: \(score)")
